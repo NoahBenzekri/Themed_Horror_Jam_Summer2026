@@ -14,12 +14,20 @@ namespace StarterAssets
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
+		[Tooltip("Sneak speed of the character in m/s")]
+		public float SneakSpeed = 1.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
 		public float SprintSpeed = 6.0f;
 		[Tooltip("Rotation speed of the character")]
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+
+		[Tooltip("Height of the character in m")]
+		public float CharacterHeight = 2.0f;
+
+		[Tooltip("The character's crouch height in m")]
+		public float CrouchHeight = 1.0f;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -117,8 +125,14 @@ namespace StarterAssets
 			Move();
 		}
 
+		private void FixedUpdate()
+		{
+			Sneak();
+		}
+
 		private void LateUpdate()
 		{
+
 			CameraRotation();
 		}
 
@@ -151,10 +165,26 @@ namespace StarterAssets
 			}
 		}
 
+		private void Sneak()
+		{
+			if (_input.sneak)
+			{
+				//_controller.height = CrouchHeight; // Set the character's height to the crouch height
+				transform.localScale = new Vector3(1, CrouchHeight / CharacterHeight, 1); // Adjust the character's scale to match the crouch height
+				//transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y
+				// - (CharacterHeight - CrouchHeight) / 2, transform.localPosition.z); // Adjust the character's position to keep it grounded
+			}
+			else
+			{
+				//_controller.height = CharacterHeight; // Reset the character's height to the default value
+				transform.localScale = Vector3.one; // Reset the character's scale to the default value
+			}
+		}
+
 		private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			float targetSpeed = _input.sneak ? SneakSpeed : _input.sprint ? SprintSpeed : MoveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
