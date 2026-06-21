@@ -2,6 +2,8 @@
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
+using DG.Tweening;
+
 
 namespace StarterAssets
 {
@@ -17,7 +19,7 @@ namespace StarterAssets
 		[Tooltip("Sneak speed of the character in m/s")]
 		public float SneakSpeed = 1.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
-		public float SprintSpeed = 6.0f;
+		public float SprintSpeed = 10.0f;
 		[Tooltip("Rotation speed of the character")]
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
@@ -28,6 +30,15 @@ namespace StarterAssets
 
 		[Tooltip("The character's crouch height in m")]
 		public float CrouchHeight = 1.0f;
+
+		[Space(10)]
+		[Header("Sprint Camera Shake")]
+		[Tooltip("The shake strength")]
+		public float CameraShakeStrength = 0.5f;
+		[Tooltip("How much will the shake vibrate")]
+		public int CameraShakeVibrato = 0;
+		[Tooltip("How much the shake will be random")]
+		public float CameraShakeRandomness = 20;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -128,11 +139,11 @@ namespace StarterAssets
 		private void FixedUpdate()
 		{
 			Sneak();
+			CameraSprintShake();
 		}
 
 		private void LateUpdate()
 		{
-
 			CameraRotation();
 		}
 
@@ -169,15 +180,20 @@ namespace StarterAssets
 		{
 			if (_input.sneak)
 			{
-				//_controller.height = CrouchHeight; // Set the character's height to the crouch height
 				transform.localScale = new Vector3(1, CrouchHeight / CharacterHeight, 1); // Adjust the character's scale to match the crouch height
-				//transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y
-				// - (CharacterHeight - CrouchHeight) / 2, transform.localPosition.z); // Adjust the character's position to keep it grounded
 			}
 			else
 			{
-				//_controller.height = CharacterHeight; // Reset the character's height to the default value
 				transform.localScale = Vector3.one; // Reset the character's scale to the default value
+			}
+		}
+
+		private void CameraSprintShake()
+		{
+			if (_input.sprint)
+			{
+				CinemachineCameraTarget.transform.DOShakeRotation(Time.fixedDeltaTime, CameraShakeStrength,
+					CameraShakeVibrato, CameraShakeRandomness, false);
 			}
 		}
 
