@@ -180,11 +180,11 @@ namespace StarterAssets
 		{
 			if (_input.sneak)
 			{
-				transform.localScale = new Vector3(1, CrouchHeight / CharacterHeight, 1); // Adjust the character's scale to match the crouch height
+				transform.localScale = new Vector3(1, CrouchHeight / 2, 1); // Adjust the character's scale to match the crouch height
 			}
 			else
 			{
-				transform.localScale = Vector3.one; // Reset the character's scale to the default value
+				transform.localScale = new Vector3(1, CharacterHeight / 2, 1); // Reset the character's scale to the default value
 			}
 		}
 
