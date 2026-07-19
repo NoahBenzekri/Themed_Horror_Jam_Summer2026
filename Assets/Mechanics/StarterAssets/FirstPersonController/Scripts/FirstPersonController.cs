@@ -78,6 +78,7 @@ namespace StarterAssets
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
+		private float _timeSinceLastShake;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -190,9 +191,11 @@ namespace StarterAssets
 
 		private void CameraSprintShake()
 		{
-			if (_input.sprint)
+			_timeSinceLastShake += Time.fixedDeltaTime;
+			if (_input.sprint && _timeSinceLastShake >= 0.1f && _input.look.sqrMagnitude < _threshold)
 			{
-				CinemachineCameraTarget.transform.DOShakeRotation(Time.fixedDeltaTime, CameraShakeStrength,
+				_timeSinceLastShake = 0f;
+				CinemachineCameraTarget.transform.DOShakeRotation(0.1f, CameraShakeStrength,
 					CameraShakeVibrato, CameraShakeRandomness, false);
 			}
 		}
